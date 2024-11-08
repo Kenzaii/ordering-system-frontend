@@ -1,3 +1,5 @@
+const backendUrl = 'https://your-backend-url.up.railway.app'; // Replace with your actual backend URL
+
 // Add product to cart and store order in backend
 async function addToCart() {
     const quantity = parseInt(document.getElementById("quantity").value);
@@ -9,7 +11,7 @@ async function addToCart() {
 
     try {
         // Send order to the backend
-        const response = await fetch('https://your-backend-url.com/order', {
+        const response = await fetch(`${backendUrl}/order`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(order)
@@ -49,7 +51,7 @@ function showSection(sectionId) {
 // Fetch order history from the backend and display it
 async function loadOrderHistory() {
     try {
-        const response = await fetch('https://your-backend-url.com/orders');
+        const response = await fetch(`${backendUrl}/orders`);
         if (!response.ok) throw new Error('Failed to fetch order history');
         
         const orders = await response.json();
