@@ -3,8 +3,187 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Order System with Multi-Product Cart (BETA)</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Order System with Multi-Product Cart</title>
+    <style>
+        /* Basic styling */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f7fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        /* Sleek Login Styles */
+        .login-container {
+            width: 350px;
+            padding: 30px;
+            background-color: #ffffff;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            border-radius: 10px;
+        }
+
+        h1, h2, h3 {
+            margin-bottom: 10px;
+        }
+
+        .login-subtitle {
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            text-align: left;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: bold;
+        }
+
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-top: 10px;
+            font-size: 1em;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .container {
+            width: 450px;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            border-radius: 10px;
+        }
+
+        .error-message {
+            color: red;
+            font-size: 0.9em;
+            margin-top: 10px;
+        }
+
+        /* Sleek Navigation Buttons */
+        .nav-buttons {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+        }
+
+        .nav-button {
+            background-color: #f4f7fa;
+            color: #333;
+            border: 1px solid #ddd;
+            padding: 10px 15px;
+            font-size: 1em;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .nav-button:hover {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        .nav-button.logout {
+            background-color: #ff6b6b;
+            color: white;
+        }
+
+        .nav-button.logout:hover {
+            background-color: #e33e3e;
+        }
+
+        /* Active tab style */
+        .nav-button.active {
+            background-color: #007bff;
+            color: #fff;
+            font-weight: bold;
+            box-shadow: 0 0 10px rgba(0, 123, 255, 0.3);
+        }
+
+        /* Product Layout and Styling */
+        .products-container {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .product-item {
+            width: 48%;
+            border-bottom: 1px solid #ddd;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            min-height: 280px;
+            box-sizing: border-box;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+        }
+
+        .product-image {
+            width: 100%;
+            height: auto;
+            max-height: 150px;
+            object-fit: cover;
+            margin-bottom: 10px;
+        }
+
+        /* Add to Cart Button */
+        .add-cart-button {
+            margin-top: 20px;
+            padding: 12px;
+            width: 100%;
+            background-color: #28a745;
+            color: white;
+            border-radius: 5px;
+            font-size: 1em;
+            border: none;
+            transition: background-color 0.3s;
+        }
+
+        .add-cart-button:hover {
+            background-color: #218838;
+        }
+
+        /* Section Styling */
+        .section {
+            display: none;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            padding: 5px 0;
+        }
+    </style>
 </head>
 <body>
     <!-- Login Section -->
@@ -25,9 +204,9 @@
         
         <!-- Sleek Navigation Buttons -->
         <div class="nav-buttons">
-            <button onclick="showSection('product')" class="nav-button">Order Page</button>
-            <button onclick="showOrderSummary()" class="nav-button">Order Summary</button>
-            <button onclick="showSection('order-history')" class="nav-button">Order History</button>
+            <button onclick="showSection('product')" class="nav-button" data-section="product">Order Page</button>
+            <button onclick="showOrderSummary()" class="nav-button" data-section="order-summary">Order Summary</button>
+            <button onclick="showSection('order-history')" class="nav-button" data-section="order-history">Order History</button>
             <button onclick="logout()" class="nav-button logout">Logout</button>
         </div>
         
@@ -73,6 +252,133 @@
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <script>
+        const predefinedUsername = "AMNC";
+        const predefinedPassword = "password";
+
+        document.addEventListener("DOMContentLoaded", () => {
+            if (localStorage.getItem("isLoggedIn") === "true") {
+                showOrderingSystem();
+                showSection('product');
+            } else {
+                showLoginPage();
+            }
+
+            document.getElementById("username").addEventListener("keypress", handleEnterKey);
+            document.getElementById("password").addEventListener("keypress", handleEnterKey);
+        });
+
+        function handleEnterKey(event) {
+            if (event.key === "Enter") {
+                login();
+            }
+        }
+
+        function showLoginPage() {
+            document.getElementById("login-section").style.display = "block";
+            document.getElementById("ordering-system").style.display = "none";
+        }
+
+        function showOrderingSystem() {
+            document.getElementById("login-section").style.display = "none";
+            document.getElementById("ordering-system").style.display = "block";
+            showSection('product');
+            loadOrderHistory();
+        }
+
+        function login() {
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
+            const loginError = document.getElementById("login-error");
+
+            if (username === predefinedUsername && password === predefinedPassword) {
+                localStorage.setItem("isLoggedIn", "true");
+                showOrderingSystem();
+            } else {
+                loginError.textContent = "Invalid username or password!";
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem("isLoggedIn");
+            showLoginPage();
+        }
+
+        function addToCart() {
+            const quantity1 = parseInt(document.getElementById("quantity1").value) || 0;
+            const quantity2 = parseInt(document.getElementById("quantity2").value) || 0;
+
+            const product1 = {
+                productName: "Jinro Chamisul Fresh Soju",
+                quantity: quantity1,
+                price: 9.25,
+                total: (quantity1 * 9.25).toFixed(2)
+            };
+
+            const product2 = {
+                productName: "Jinro Gold",
+                quantity: quantity2,
+                price: 9.75,
+                total: (quantity2 * 9.75).toFixed(2)
+            };
+
+            const cart = [product1, product2].filter(product => product.quantity > 0);
+            localStorage.setItem("cart", JSON.stringify(cart));
+            showOrderSummary();
+        }
+
+        function showOrderSummary() {
+            showSection('order-summary');
+            const cart = JSON.parse(localStorage.getItem("cart")) || [];
+            const summaryList = document.getElementById("summary-list");
+            summaryList.innerHTML = cart.map(item => `
+                <li>${item.productName}: Quantity ${item.quantity}, Total $${item.total}</li>
+            `).join("");
+
+            const totalAmount = cart.reduce((sum, item) => sum + parseFloat(item.total), 0).toFixed(2);
+            document.getElementById("total-amount").textContent = totalAmount;
+        }
+
+        function confirmOrder() {
+            const cart = JSON.parse(localStorage.getItem("cart")) || [];
+            if (cart.length === 0) return alert("Your cart is empty!");
+
+            const orderHistory = JSON.parse(localStorage.getItem("orderHistory")) || [];
+            orderHistory.push({
+                date: new Date().toLocaleString(),
+                items: cart,
+                totalAmount: cart.reduce((sum, item) => sum + parseFloat(item.total), 0).toFixed(2)
+            });
+            localStorage.setItem("orderHistory", JSON.stringify(orderHistory));
+
+            alert("Order confirmed!");
+            loadOrderHistory();
+            showSection('order-history');
+            localStorage.removeItem("cart");
+        }
+
+        function loadOrderHistory() {
+            const orderHistory = JSON.parse(localStorage.getItem("orderHistory")) || [];
+            const historyList = document.getElementById("history-list");
+            historyList.innerHTML = orderHistory.map((order, index) =>
+                `<li>Order #${index + 1} (${order.date}): Total $${order.totalAmount}</li>`
+            ).join("");
+        }
+
+        function clearOrderHistory() {
+            if (confirm("Are you sure you want to clear the order history?")) {
+                localStorage.removeItem("orderHistory");
+                loadOrderHistory();
+            }
+        }
+
+        function showSection(sectionId) {
+            document.querySelectorAll('.section').forEach(section => section.style.display = 'none');
+            document.getElementById(sectionId).style.display = 'block';
+
+            document.querySelectorAll('.nav-button').forEach(button => button.classList.remove('active'));
+            document.querySelector(`button[data-section="${sectionId}"]`).classList.add('active');
+        }
+    </script>
 </body>
 </html>

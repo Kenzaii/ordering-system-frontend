@@ -85,8 +85,8 @@ function addToCart() {
 
 // Display the order summary
 function showOrderSummary() {
+    showSection('order-summary'); // Automatically highlight Order Summary tab
     const cart = JSON.parse(localStorage.getItem("cart")) || [];
-    showSection('order-summary');
     const summaryList = document.getElementById("summary-list");
     summaryList.innerHTML = cart.map(item => `
         <li>${item.productName}: Quantity ${item.quantity}, Total $${item.total}</li>
@@ -137,4 +137,9 @@ function showSection(sectionId) {
     const sections = document.querySelectorAll('.section');
     sections.forEach(section => section.style.display = 'none');
     document.getElementById(sectionId).style.display = 'block';
+
+    // Update active tab in navigation menu
+    const navButtons = document.querySelectorAll('.nav-button');
+    navButtons.forEach(button => button.classList.remove('active'));
+    document.querySelector(`button[data-section="${sectionId}"]`).classList.add('active');
 }
