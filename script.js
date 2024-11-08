@@ -1,47 +1,118 @@
-// Load order history on page load
-document.addEventListener('DOMContentLoaded', loadOrderHistory);
+// Predefined username and password
+const predefinedUsername = "AMNC";
+const predefinedPassword = "password";
 
-// Add product to cart and store order temporarily
-function addToCart() {
-    const quantity = parseInt(document.getElementById("quantity").value);
-    const price = 25.00;
-    const productName = "Super Widget";
-    const total = (price * quantity).toFixed(2);
+// Check if user is already logged in
+document.addEventListener("DOMContentLoaded", () => {
+    if (localStorage.getItem("isLoggedIn") === "true") {
+        showOrderingSystem();
+        showSection('product'); // Show product section immediately after login
+    } else {
+        showLoginPage();
+    }
 
-    // Store temporary order details for summary
-    const order = { productName, quantity, total };
-    localStorage.setItem("currentOrder", JSON.stringify(order));
-    
-    updateOrderSummary(order);
+    // Add Enter key listener to login fields
+    document.getElementById("username").addEventListener("keypress", handleEnterKey);
+    document.getElementById("password").addEventListener("keypress", handleEnterKey);
+});
+
+// Function to handle Enter key for login
+function handleEnterKey(event) {
+    if (event.key === "Enter") {
+        login();
+    }
 }
 
-// Update order summary
-function updateOrderSummary(order) {
+// Show login page
+function showLoginPage() {
+    document.getElementById("login-section").style.display = "block";
+    document.getElementById("ordering-system").style.display = "none";
+}
+
+// Show ordering system after login
+function showOrderingSystem() {
+    document.getElementById("login-section").style.display = "none";
+    document.getElementById("ordering-system").style.display = "block";
+    showSection('product'); // Show product section immediately
+    loadOrderHistory();
+}
+
+// Handle login
+function login() {
+    const username = document.getElementById("username").value;
+    const password = document.getElementById("password").value;
+    const loginError = document.getElementById("login-error");
+
+    if (username === predefinedUsername && password === predefinedPassword) {
+        localStorage.setItem("isLoggedIn", "true");
+        showOrderingSystem();
+    } else {
+        loginError.textContent = "Invalid username or password!";
+    }
+}
+
+// Handle logout
+function logout() {
+    localStorage.removeItem("isLoggedIn");
+    showLoginPage();
+}
+
+// Add both products to the cart and display order summary
+function addToCart() {
+    const quantity1 = parseInt(document.getElementById("quantity1").value) || 0;
+    const quantity2 = parseInt(document.getElementById("quantity2").value) || 0;
+
+    const product1 = {
+        productName: "Jinro Chamisul Fresh Soju",
+        quantity: quantity1,
+        price: 9.25,
+        total: (quantity1 * 9.25).toFixed(2)
+    };
+
+    const product2 = {
+        productName: "Jinro Gold",
+        quantity: quantity2,
+        price: 9.75,
+        total: (quantity2 * 9.75).toFixed(2)
+    };
+
+    const cart = [product1, product2].filter(product => product.quantity > 0); // Only add if quantity > 0
+    localStorage.setItem("cart", JSON.stringify(cart));
+
+    // Automatically show the order summary after adding items to cart
+    showOrderSummary();
+}
+
+// Display the order summary
+function showOrderSummary() {
+    const cart = JSON.parse(localStorage.getItem("cart")) || [];
     showSection('order-summary');
     const summaryList = document.getElementById("summary-list");
-    summaryList.innerHTML = `
-        <li>Product: ${order.productName}</li>
-        <li>Quantity: ${order.quantity}</li>
-        <li>Total: $${order.total}</li>
-    `;
+    summaryList.innerHTML = cart.map(item => `
+        <li>${item.productName}: Quantity ${item.quantity}, Total $${item.total}</li>
+    `).join("");
+
+    const totalAmount = cart.reduce((sum, item) => sum + parseFloat(item.total), 0).toFixed(2);
+    document.getElementById("total-amount").textContent = totalAmount;
 }
 
 // Confirm the order and add it to order history
 function confirmOrder() {
-    const order = JSON.parse(localStorage.getItem("currentOrder"));
-    if (!order) return alert("No order to confirm.");
+    const cart = JSON.parse(localStorage.getItem("cart")) || [];
+    if (cart.length === 0) return alert("Your cart is empty!");
 
-    // Retrieve existing order history or create a new array
     const orderHistory = JSON.parse(localStorage.getItem("orderHistory")) || [];
-    
-    // Add current order to history
-    orderHistory.push(order);
+    orderHistory.push({
+        date: new Date().toLocaleString(),
+        items: cart,
+        totalAmount: cart.reduce((sum, item) => sum + parseFloat(item.total), 0).toFixed(2)
+    });
     localStorage.setItem("orderHistory", JSON.stringify(orderHistory));
-    
+
     alert("Order confirmed!");
     loadOrderHistory();
     showSection('order-history');
-    localStorage.removeItem("currentOrder"); // Clear current order
+    localStorage.removeItem("cart"); // Clear cart after confirming order
 }
 
 // Load order history from local storage
@@ -49,7 +120,7 @@ function loadOrderHistory() {
     const orderHistory = JSON.parse(localStorage.getItem("orderHistory")) || [];
     const historyList = document.getElementById("history-list");
     historyList.innerHTML = orderHistory.map((order, index) =>
-        `<li>Order #${index + 1}: ${order.productName}, Quantity: ${order.quantity}, Total: $${order.total}</li>`
+        `<li>Order #${index + 1} (${order.date}): Total $${order.totalAmount}</li>`
     ).join("");
 }
 
