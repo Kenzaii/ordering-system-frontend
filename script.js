@@ -143,3 +143,48 @@ function showSection(sectionId) {
     navButtons.forEach(button => button.classList.remove('active'));
     document.querySelector(`button[data-section="${sectionId}"]`).classList.add('active');
 }
+
+function confirmOrder() {
+    const cart = JSON.parse(localStorage.getItem("cart")) || [];
+    if (cart.length === 0) return alert("Your cart is empty!");
+
+    const orderSummary = cart.map(item => `${item.productName}: Quantity ${item.quantity}, Total $${item.total}`).join('\n');
+    const totalAmount = cart.reduce((sum, item) => sum + parseFloat(item.total), 0).toFixed(2);
+
+    // Add to order history in local storage
+    const orderHistory = JSON.parse(localStorage.getItem("orderHistory")) || [];
+    orderHistory.push({
+        date: new Date().toLocaleString(),
+        items: cart,
+        totalAmount
+    });
+    localStorage.setItem("orderHistory", JSON.stringify(orderHistory));
+
+    // Send order confirmation email
+    fetch('http://localhost:3000/send-email', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            to: "customer_email@example.com", // Replace with customer's email address
+            orderSummary,
+            totalAmount
+        })
+    })
+    .then(response => {
+        if (response.ok) {
+            alert("Order confirmed! A confirmation email has been sent.");
+        } else {
+            alert("Order confirmed, but failed to send confirmation email.");
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert("Order confirmed, but there was an error sending the confirmation email.");
+    });
+
+    loadOrderHistory();
+    showSection('order-history');
+    localStorage.removeItem("cart"); // Clear cart after confirming order
+}
