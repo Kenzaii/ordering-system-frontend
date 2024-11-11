@@ -48,47 +48,4 @@ export default async function handler(req, res) {
         res.status(405).json({ message: 'Method not allowed' });
     }
 
-        function confirmOrder() {
-        const cart = JSON.parse(localStorage.getItem("cart")) || [];
-        if (cart.length === 0) return alert("Your cart is empty!");
-    
-        const orderSummary = cart.map(item => `${item.productName}: Quantity ${item.quantity}, Total $${item.total}`).join('\n');
-        const totalAmount = cart.reduce((sum, item) => sum + parseFloat(item.total), 0).toFixed(2);
-    
-        // Add to order history in local storage
-        const orderHistory = JSON.parse(localStorage.getItem("orderHistory")) || [];
-        orderHistory.push({
-            date: new Date().toLocaleString(),
-            items: cart,
-            totalAmount
-        });
-        localStorage.setItem("orderHistory", JSON.stringify(orderHistory));
-    
-        // Send order tracking email to admin using Vercel's API
-        fetch('https://ordering-system-frontend-three.vercel.app/api/send-email', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                orderSummary,
-                totalAmount
-            })
-        })
-        .then(response => {
-            if (response.ok) {
-                alert("Order confirmed! An email has been sent to the admin for tracking.");
-            } else {
-                alert("Order confirmed, but failed to send tracking email.");
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert("Order confirmed, but there was an error sending the tracking email.");
-        });
-    
-        loadOrderHistory();
-        showSection('order-history');
-        localStorage.removeItem("cart"); // Clear cart after confirming order
-    }
 }
