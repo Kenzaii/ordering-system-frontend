@@ -183,6 +183,55 @@
         li {
             padding: 5px 0;
         }
+
+        /* Chatbot Icon Style */
+        #chatbot-icon {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background-color: #007bff;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 24px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s;
+        }
+        
+        #chatbot-icon:hover {
+            transform: scale(1.1);
+        }
+        
+        /* Chatbox Overlay Style */
+        #chatbox-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none; /* Hidden by default */
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+        
+        /* Chatbox Container Style */
+        #chatbox-container {
+            width: 90%;
+            max-width: 400px;
+            height: 80%;
+            background-color: #fff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
     </style>
 </head>
 <body>
@@ -251,6 +300,19 @@
             <button onclick="clearOrderHistory()">Clear History</button>
         </div>
     </div>
+
+    <!-- Chatbot Icon -->
+    <div id="chatbot-icon" onclick="toggleChatbox()">
+        💬 <!-- You can replace this with a chat icon image if preferred -->
+    </div>
+    
+    <!-- Chatbox Overlay -->
+    <div id="chatbox-overlay" onclick="closeChatbox()">
+        <div id="chatbox-container" onclick="event.stopPropagation()">
+            <iframe src="https://app.relevanceai.com/agents/f1db6c/f099903e0711-4d99-8a1c-6c65b95a8189/772c3d36-ddc1-4f56-8383-4e023aedf1ef/share" width="100%" height="100%" frameborder="0"></iframe>
+        </div>
+    </div>
+
 
     <script>
         const predefinedUsername = "AMNC";
@@ -379,6 +441,18 @@
             document.querySelectorAll('.nav-button').forEach(button => button.classList.remove('active'));
             document.querySelector(`button[data-section="${sectionId}"]`).classList.add('active');
         }
+
+        // Toggle the chatbox overlay
+        function toggleChatbox() {
+            const chatboxOverlay = document.getElementById('chatbox-overlay');
+            chatboxOverlay.style.display = chatboxOverlay.style.display === 'flex' ? 'none' : 'flex';
+        }
+        
+        // Close the chatbox overlay when clicking outside the chatbox
+        function closeChatbox() {
+            document.getElementById('chatbox-overlay').style.display = 'none';
+        }
+
     </script>
 </body>
 </html>
