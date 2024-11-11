@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Order System with Multi-Product Cart and Chatbox</title>
+    <title>Order System with Multi-Product Cart</title>
     <style>
         /* Basic styling */
         body {
@@ -16,22 +16,75 @@
             margin: 0;
         }
 
-        .login-container, .container {
+        /* Sleek Login Styles */
+        .login-container {
             width: 350px;
-            padding: 20px;
+            padding: 30px;
             background-color: #ffffff;
             box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-            border-radius: 10px;
             text-align: center;
+            border-radius: 10px;
         }
 
-        input[type="text"], input[type="password"], button {
+        h1, h2, h3 {
+            margin-bottom: 10px;
+        }
+
+        .login-subtitle {
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            text-align: left;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: bold;
+        }
+
+        input[type="text"], input[type="password"] {
             width: 100%;
             padding: 10px;
-            margin-top: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
             border-radius: 5px;
+            box-sizing: border-box;
         }
 
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-top: 10px;
+            font-size: 1em;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .container {
+            width: 450px;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            border-radius: 10px;
+        }
+
+        .error-message {
+            color: red;
+            font-size: 0.9em;
+            margin-top: 10px;
+        }
+
+        /* Sleek Navigation Buttons */
         .nav-buttons {
             display: flex;
             justify-content: space-around;
@@ -43,10 +96,27 @@
             color: #333;
             border: 1px solid #ddd;
             padding: 10px 15px;
+            font-size: 1em;
             cursor: pointer;
             border-radius: 5px;
+            transition: background-color 0.3s, color 0.3s;
         }
 
+        .nav-button:hover {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        .nav-button.logout {
+            background-color: #ff6b6b;
+            color: white;
+        }
+
+        .nav-button.logout:hover {
+            background-color: #e33e3e;
+        }
+
+        /* Active tab style */
         .nav-button.active {
             background-color: #007bff;
             color: #fff;
@@ -54,7 +124,7 @@
             box-shadow: 0 0 10px rgba(0, 123, 255, 0.3);
         }
 
-        .section { display: none; }
+        /* Product Layout and Styling */
         .products-container {
             display: flex;
             justify-content: space-between;
@@ -63,22 +133,58 @@
 
         .product-item {
             width: 48%;
+            border-bottom: 1px solid #ddd;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            min-height: 280px;
+            box-sizing: border-box;
             background-color: #f9f9f9;
             border-radius: 5px;
-            padding: 15px;
-            text-align: center;
         }
 
+        .product-image {
+            width: 100%;
+            height: auto;
+            max-height: 150px;
+            object-fit: cover;
+            margin-bottom: 10px;
+        }
+
+        /* Add to Cart Button */
         .add-cart-button {
+            margin-top: 20px;
+            padding: 12px;
             width: 100%;
             background-color: #28a745;
             color: white;
             border-radius: 5px;
             font-size: 1em;
-            margin-top: 20px;
+            border: none;
+            transition: background-color 0.3s;
         }
 
-        /* Chatbot icon and overlay */
+        .add-cart-button:hover {
+            background-color: #218838;
+        }
+
+        /* Section Styling */
+        .section {
+            display: none;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            padding: 5px 0;
+        }
+
+        /* Chatbot Icon Style */
         #chatbot-icon {
             position: fixed;
             bottom: 20px;
@@ -96,11 +202,12 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             transition: transform 0.3s;
         }
-
+        
         #chatbot-icon:hover {
             transform: scale(1.1);
         }
-
+        
+        /* Chatbox Overlay Style */
         #chatbox-overlay {
             position: fixed;
             top: 0;
@@ -108,12 +215,13 @@
             width: 100%;
             height: 100%;
             background-color: rgba(0, 0, 0, 0.5);
-            display: none;
+            display: none; /* Hidden by default */
             align-items: center;
             justify-content: center;
             z-index: 9999;
         }
-
+        
+        /* Chatbox Container Style */
         #chatbox-container {
             width: 90%;
             max-width: 400px;
@@ -123,23 +231,27 @@
             overflow: hidden;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
         }
+
     </style>
 </head>
 <body>
     <!-- Login Section -->
     <div id="login-section" class="login-container">
-        <h1>Login</h1>
+        <h1>Welcome Back</h1>
+        <p class="login-subtitle">Please sign in to continue</p>
         <label for="username">Username</label>
         <input type="text" id="username" required>
         <label for="password">Password</label>
         <input type="password" id="password" required>
         <button onclick="login()">Login</button>
+        <p id="login-error" class="error-message"></p>
     </div>
 
-    <!-- Ordering System Section -->
+    <!-- Ordering System Section (hidden until login) -->
     <div id="ordering-system" class="container" style="display: none;">
-        <h1>Order System</h1>
+        <h1>Product Ordering System</h1>
         
+        <!-- Sleek Navigation Buttons -->
         <div class="nav-buttons">
             <button onclick="showSection('product')" class="nav-button" data-section="product">Order Page</button>
             <button onclick="showOrderSummary()" class="nav-button" data-section="order-summary">Order Summary</button>
@@ -151,29 +263,30 @@
         <div id="product" class="section">
             <h2>Select Products</h2>
             <div class="products-container">
+                
                 <!-- Product 1: Jinro Chamisul Fresh Soju -->
                 <div class="product-item">
-                    <img src="https://www.alcoholnow.sg/cdn/shop/products/Jinro-Chamisul_506x.jpg?v=1606381656" alt="Jinro Chamisul Fresh Soju" style="width:100%; height:150px;">
+                    <img src="https://www.alcoholnow.sg/cdn/shop/products/Jinro-Chamisul_506x.jpg?v=1606381656" alt="Jinro Chamisul Fresh Soju" class="product-image">
                     <h3>Jinro Chamisul Fresh Soju</h3>
                     <p>Price: $9.25</p>
                     <label for="quantity1">Quantity:</label>
-                    <input type="number" id="quantity1" min="0" value="0">
+                    <input type="number" id="quantity1" name="quantity1" min="0" value="0">
                 </div>
 
                 <!-- Product 2: Jinro Gold -->
                 <div class="product-item">
-                    <img src="https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQteM5g0j_Un0BQ8q6qDJjspEyFa6QLNgpxeLSijS6ci9ZhPoAG" alt="Jinro Gold" style="width:100%; height:150px;">
+                    <img src="https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQteM5g0j_Un0BQ8q6qDJjspEyFa6QLNgpxeLSijS6ci9ZhPoAG" alt="Jinro Gold" class="product-image">
                     <h3>Jinro Gold</h3>
                     <p>Price: $9.75</p>
                     <label for="quantity2">Quantity:</label>
-                    <input type="number" id="quantity2" min="0" value="0">
+                    <input type="number" id="quantity2" name="quantity2" min="0" value="0">
                 </div>
             </div>
             <button onclick="addToCart()" class="add-cart-button">Add to Cart</button>
         </div>
-
+        
         <!-- Order Summary Section -->
-        <div id="order-summary" class="section">
+        <div id="order-summary" class="section" style="display: none;">
             <h3>Order Summary</h3>
             <ul id="summary-list"></ul>
             <p><strong>Total:</strong> $<span id="total-amount">0.00</span></p>
@@ -181,7 +294,7 @@
         </div>
         
         <!-- Order History Section -->
-        <div id="order-history" class="section">
+        <div id="order-history" class="section" style="display: none;">
             <h3>Order History</h3>
             <ul id="history-list"></ul>
             <button onclick="clearOrderHistory()">Clear History</button>
@@ -189,8 +302,10 @@
     </div>
 
     <!-- Chatbot Icon -->
-    <div id="chatbot-icon" onclick="toggleChatbox()">💬</div>
-
+    <div id="chatbot-icon" onclick="toggleChatbox()">
+        💬 <!-- You can replace this with a chat icon image if preferred -->
+    </div>
+    
     <!-- Chatbox Overlay -->
     <div id="chatbox-overlay" onclick="closeChatbox()">
         <div id="chatbox-container" onclick="event.stopPropagation()">
@@ -198,8 +313,9 @@
         </div>
     </div>
 
+
     <script>
-        const predefinedUsername = "user";
+        const predefinedUsername = "AMNC";
         const predefinedPassword = "password";
 
         document.addEventListener("DOMContentLoaded", () => {
@@ -210,20 +326,38 @@
                 showLoginPage();
             }
 
-            document.getElementById("username").addEventListener("keypress", (e) => {
-                if (e.key === "Enter") login();
-            });
+            document.getElementById("username").addEventListener("keypress", handleEnterKey);
+            document.getElementById("password").addEventListener("keypress", handleEnterKey);
         });
+
+        function handleEnterKey(event) {
+            if (event.key === "Enter") {
+                login();
+            }
+        }
+
+        function showLoginPage() {
+            document.getElementById("login-section").style.display = "block";
+            document.getElementById("ordering-system").style.display = "none";
+        }
+
+        function showOrderingSystem() {
+            document.getElementById("login-section").style.display = "none";
+            document.getElementById("ordering-system").style.display = "block";
+            showSection('product');
+            loadOrderHistory();
+        }
 
         function login() {
             const username = document.getElementById("username").value;
             const password = document.getElementById("password").value;
+            const loginError = document.getElementById("login-error");
 
             if (username === predefinedUsername && password === predefinedPassword) {
                 localStorage.setItem("isLoggedIn", "true");
                 showOrderingSystem();
             } else {
-                alert("Invalid username or password!");
+                loginError.textContent = "Invalid username or password!";
             }
         }
 
@@ -259,50 +393,66 @@
             showSection('order-summary');
             const cart = JSON.parse(localStorage.getItem("cart")) || [];
             const summaryList = document.getElementById("summary-list");
-            summaryList.innerHTML = cart.map(item => `<li>${item.productName}: Quantity ${item.quantity}, Total $${item.total}</li>`).join("");
-            document.getElementById("total-amount").textContent = cart.reduce((sum, item) => sum + parseFloat(item.total), 0).toFixed(2);
+            summaryList.innerHTML = cart.map(item => `
+                <li>${item.productName}: Quantity ${item.quantity}, Total $${item.total}</li>
+            `).join("");
+
+            const totalAmount = cart.reduce((sum, item) => sum + parseFloat(item.total), 0).toFixed(2);
+            document.getElementById("total-amount").textContent = totalAmount;
         }
 
         function confirmOrder() {
             const cart = JSON.parse(localStorage.getItem("cart")) || [];
-            const orderSummary = cart.map(item => `${item.productName}: Quantity ${item.quantity}, Total $${item.total}`).join('\n');
-            const totalAmount = cart.reduce((sum, item) => sum + parseFloat(item.total), 0).toFixed(2);
+            if (cart.length === 0) return alert("Your cart is empty!");
 
-            fetch('https://ordering-system-frontend-5zxqtcsj3-kenzaiis-projects.vercel.app/api/send-email', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ orderSummary, totalAmount })
-            })
-            .then(response => response.ok ? alert("Order confirmed! Admin notified.") : alert("Order confirmed, but email failed."))
-            .catch(error => console.error('Error:', error));
-            
-            localStorage.removeItem("cart");
+            const orderHistory = JSON.parse(localStorage.getItem("orderHistory")) || [];
+            orderHistory.push({
+                date: new Date().toLocaleString(),
+                items: cart,
+                totalAmount: cart.reduce((sum, item) => sum + parseFloat(item.total), 0).toFixed(2)
+            });
+            localStorage.setItem("orderHistory", JSON.stringify(orderHistory));
+
+            alert("Order confirmed!");
             loadOrderHistory();
             showSection('order-history');
-        }
-
-        function showSection(sectionId) {
-            document.querySelectorAll('.section').forEach(section => section.style.display = 'none');
-            document.getElementById(sectionId).style.display = 'block';
-            document.querySelectorAll('.nav-button').forEach(button => button.classList.remove('active'));
-            document.querySelector(`button[data-section="${sectionId}"]`).classList.add('active');
+            localStorage.removeItem("cart");
         }
 
         function loadOrderHistory() {
             const orderHistory = JSON.parse(localStorage.getItem("orderHistory")) || [];
             const historyList = document.getElementById("history-list");
-            historyList.innerHTML = orderHistory.map((order, index) => `<li>Order #${index + 1} (${order.date}): Total $${order.totalAmount}</li>`).join("");
+            historyList.innerHTML = orderHistory.map((order, index) =>
+                `<li>Order #${index + 1} (${order.date}): Total $${order.totalAmount}</li>`
+            ).join("");
         }
 
-        // Chatbox toggle functions
+        function clearOrderHistory() {
+            if (confirm("Are you sure you want to clear the order history?")) {
+                localStorage.removeItem("orderHistory");
+                loadOrderHistory();
+            }
+        }
+
+        function showSection(sectionId) {
+            document.querySelectorAll('.section').forEach(section => section.style.display = 'none');
+            document.getElementById(sectionId).style.display = 'block';
+
+            document.querySelectorAll('.nav-button').forEach(button => button.classList.remove('active'));
+            document.querySelector(`button[data-section="${sectionId}"]`).classList.add('active');
+        }
+
+        // Toggle the chatbox overlay
         function toggleChatbox() {
             const chatboxOverlay = document.getElementById('chatbox-overlay');
             chatboxOverlay.style.display = chatboxOverlay.style.display === 'flex' ? 'none' : 'flex';
         }
-
+        
+        // Close the chatbox overlay when clicking outside the chatbox
         function closeChatbox() {
             document.getElementById('chatbox-overlay').style.display = 'none';
         }
+
     </script>
 </body>
 </html>
