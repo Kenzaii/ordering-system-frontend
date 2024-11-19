@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div id="admin-dashboard" class="admin-wrapper">
+        <nav class="admin-nav">
+            <div class="nav-brand">
+                <i class="fas fa-shield-alt"></i>
+                <span>Admin Portal</span>
+            </div>
+            <div class="nav-menu">
+                <button class="btn btn-text" onclick="showSection('products')">
+                    <i class="fas fa-box"></i> Products
+                </button>
+                <button class="btn btn-text" onclick="showSection('orders')">
+                    <i class="fas fa-shopping-cart"></i> Orders
+                </button>
+                <button class="btn btn-text" onclick="showSection('accounts')">
+                    <i class="fas fa-users"></i> Accounts
+                </button>
+            </div>
+            <button class="btn btn-secondary btn-sm" onclick="handleLogout()">
+                <i class="fas fa-sign-out-alt"></i>
+                Sign Out
+            </button>
+        </nav>
+
+        <div class="admin-container">
+            <!-- Products Section -->
+            <div id="products-section" class="dashboard-section">
+                <div class="section-header">
+                    <h2>Products Management</h2>
+                    <button class="btn btn-primary" onclick="addProduct()">
+                        <i class="fas fa-plus"></i> Add Product
+                    </button>
+                </div>
+                <div id="products-list" class="products-grid"></div>
+            </div>
+
+            <!-- Orders Section -->
+            <div id="orders-section" class="dashboard-section" style="display: none;">
+                <div class="section-header">
+                    <h2>Order History</h2>
+                </div>
+                <div id="orders-list" class="orders-grid"></div>
+            </div>
+
+            <!-- Accounts Section -->
+            <div id="accounts-section" class="dashboard-section" style="display: none;">
+                <div class="section-header">
+                    <h2>Account Management</h2>
+                    <button class="btn btn-primary" onclick="addAccount()">
+                        <i class="fas fa-plus"></i> Add Account
+                    </button>
+                </div>
+                <div id="accounts-list" class="accounts-grid"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="config.js"></script>
+    <script src="utils.js"></script>
+    <script src="admin.js"></script>
+</body>
+</html> 

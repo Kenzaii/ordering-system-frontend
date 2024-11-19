@@ -1,0 +1,222 @@
+/* Base Styles */
+:root {
+    --primary-black: #000000;
+    --primary-white: #ffffff;
+    --gray-100: #f7f7f7;
+    --gray-200: #e5e5e5;
+    --gray-300: #d4d4d4;
+    --gray-600: #666666;
+    --accent-color: #000000;
+}
+
+body {
+    background: var(--primary-white);
+    color: var(--primary-black);
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Login Styles */
+.login-wrapper {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: var(--primary-white);
+}
+
+.login-container {
+    width: 100%;
+    max-width: 400px;
+    padding: 48px;
+    background: var(--primary-white);
+    border-radius: 16px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+}
+
+.login-header {
+    text-align: center;
+    margin-bottom: 48px;
+}
+
+.login-header h1 {
+    font-size: 32px;
+    font-weight: 600;
+    color: var(--primary-black);
+    margin-bottom: 12px;
+    letter-spacing: -0.5px;
+}
+
+.login-header p {
+    color: var(--gray-600);
+    font-size: 16px;
+}
+
+.form-group {
+    margin-bottom: 24px;
+    position: relative;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 16px;
+    border: 2px solid var(--gray-200);
+    border-radius: 12px;
+    font-size: 16px;
+    transition: all 0.2s ease;
+    background: var(--primary-white);
+    color: var(--primary-black);
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: var(--primary-black);
+    box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.05);
+}
+
+.form-group label {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--gray-600);
+    transition: all 0.2s ease;
+    pointer-events: none;
+    font-size: 16px;
+}
+
+.form-group input:focus + label,
+.form-group input:not(:placeholder-shown) + label {
+    top: 0;
+    font-size: 12px;
+    background: var(--primary-white);
+    padding: 0 8px;
+    color: var(--primary-black);
+}
+
+.login-btn {
+    width: 100%;
+    padding: 16px;
+    background: var(--primary-black);
+    color: var(--primary-white);
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-top: 8px;
+}
+
+.login-btn:hover {
+    background: #333333;
+    transform: translateY(-1px);
+}
+
+.login-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.error-message {
+    background: #fff2f2;
+    border-left: 4px solid #ff4444;
+    color: #ff4444;
+    padding: 16px;
+    border-radius: 12px;
+    font-size: 14px;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* Admin Dashboard Styles */
+.admin-wrapper {
+    min-height: 100vh;
+    background: var(--gray-100);
+}
+
+.admin-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 72px;
+    background: var(--primary-white);
+    border-bottom: 1px solid var(--gray-200);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 32px;
+    z-index: 1000;
+}
+
+.nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--primary-black);
+}
+
+.nav-brand i {
+    font-size: 24px;
+}
+
+.btn {
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-secondary {
+    background: var(--gray-100);
+    color: var(--primary-black);
+    border: none;
+}
+
+.btn-secondary:hover {
+    background: var(--gray-200);
+}
+
+.btn-sm {
+    padding: 8px 16px;
+    font-size: 14px;
+}
+
+/* Admin Container */
+.admin-container {
+    padding: 96px 32px 32px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* Customer Dashboard */
+.customer-wrapper {
+    min-height: 100vh;
+    background: var(--gray-100);
+}
+
+.customer-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 72px;
+    background: var(--primary-white);
+    border-bottom: 1px solid var(--gray-200);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 32px;
+    z-index: 1000;
+}
+
+
