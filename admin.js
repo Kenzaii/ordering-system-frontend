@@ -163,10 +163,10 @@ async function addProduct() {
 
             const productData = {
                 fields: {
-                    Name: document.getElementById('productName').value.trim(),
-                    Price: parseFloat(document.getElementById('productPrice').value),
-                    ImageURL: document.getElementById('productImage').value.trim(),
-                    AssignedCustomerIDS: selectedCustomers
+                    "Name": document.getElementById('productName').value.trim(),
+                    "Price": parseFloat(document.getElementById('productPrice').value),
+                    "ImageURL": document.getElementById('productImage').value.trim(),
+                    "AssignedCustomerIDs": selectedCustomers
                 }
             };
 
@@ -197,7 +197,6 @@ async function addProduct() {
 async function fetchProducts() {
     try {
         const response = await fetchAirtable('Products');
-        console.log('Airtable Products Response:', response);
         const productsList = document.getElementById('products-list');
         
         if (!response.records || response.records.length === 0) {
@@ -205,41 +204,38 @@ async function fetchProducts() {
             return;
         }
 
-        const productsHTML = response.records.map(product => {
-            const assignedCustomers = product.fields.AssignedCustomerIDS || [];
-            return `
-                <div class="product-card">
-                    <div class="product-image">
-                        <img src="${product.fields.ImageURL || 'placeholder.jpg'}" 
-                             alt="${product.fields.Name}"
-                             onerror="this.src='placeholder.jpg'">
+        const productsHTML = response.records.map(product => `
+            <div class="product-card">
+                <div class="product-image">
+                    <img src="${product.fields.ImageURL || 'placeholder.jpg'}" 
+                         alt="${product.fields.Name}"
+                         onerror="this.src='placeholder.jpg'">
+                </div>
+                <div class="product-details">
+                    <div class="product-header">
+                        <h3>${product.fields.Name}</h3>
+                        <span class="price">$${product.fields.Price}</span>
                     </div>
-                    <div class="product-details">
-                        <div class="product-header">
-                            <h3>${product.fields.Name}</h3>
-                            <span class="price">$${product.fields.Price}</span>
-                        </div>
-                        <div class="customer-info">
-                            Assigned to: 
-                            ${assignedCustomers.length > 0 ? 
-                                assignedCustomers.map(id => 
-                                    `<span class="customer-badge">${id}</span>`
-                                ).join(' ') : 
-                                '<span class="customer-badge unassigned">Unassigned</span>'
-                            }
-                        </div>
-                        <div class="product-actions">
-                            <button class="btn btn-sm btn-secondary" onclick="editProduct('${product.id}')">
-                                <i class="fas fa-edit"></i> Edit
-                            </button>
-                            <button class="btn btn-sm btn-danger" onclick="deleteProduct('${product.id}')">
-                                <i class="fas fa-trash"></i> Delete
-                            </button>
-                        </div>
+                    <div class="customer-info">
+                        Assigned to: 
+                        ${product.fields.AssignedCustomerIDs?.length ? 
+                            product.fields.AssignedCustomerIDs.map(id => 
+                                `<span class="customer-badge">${id}</span>`
+                            ).join(' ') : 
+                            '<span class="customer-badge unassigned">Unassigned</span>'
+                        }
+                    </div>
+                    <div class="product-actions">
+                        <button class="btn btn-sm btn-secondary" onclick="editProduct('${product.id}')">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                        <button class="btn btn-sm btn-danger" onclick="deleteProduct('${product.id}')">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
                     </div>
                 </div>
-            `;
-        }).join('');
+            </div>
+        `).join('');
 
         productsList.innerHTML = productsHTML;
     } catch (error) {
@@ -258,7 +254,7 @@ async function editProduct(productId) {
         
         const customerOptions = customerIDs.map(id => `
             <option value="${id}" 
-                ${product.fields.AssignedCustomerIDS?.includes(id) ? 'selected' : ''}>
+                ${product.fields.AssignedCustomerIDs?.includes(id) ? 'selected' : ''}>
                 ${id}
             </option>
         `).join('');
@@ -333,7 +329,7 @@ async function editProduct(productId) {
                 Name: document.getElementById('productName').value,
                 Price: parseFloat(document.getElementById('productPrice').value),
                 ImageURL: document.getElementById('productImage').value,
-                AssignedCustomerIDS: selectedCustomers
+                AssignedCustomerIDs: selectedCustomers
             };
 
             console.log('Updating product with data:', productData); // Debug log
@@ -476,149 +472,136 @@ function displayOrders(orders) {
 
 async function fetchAccounts() {
     try {
-        // Create accounts section if it doesn't exist
-        let accountsSection = document.getElementById('accounts-section');
-        if (!accountsSection) {
-            accountsSection = document.createElement('div');
-            accountsSection.id = 'accounts-section';
-            document.querySelector('.dashboard-container').appendChild(accountsSection);
-        }
-
-        // Create accounts grid if it doesn't exist
-        let accountsGrid = document.getElementById('accounts-grid');
-        if (!accountsGrid) {
-            accountsGrid = document.createElement('div');
-            accountsGrid.id = 'accounts-grid';
-            accountsSection.appendChild(accountsGrid);
-        }
-
         const response = await fetchAirtable('Users');
-        displayAccounts(response.records);
+        console.log('Accounts response:', response);
+        const accountsList = document.getElementById('accounts-list');
+        
+        if (!response.records || response.records.length === 0) {
+            accountsList.innerHTML = '<p class="empty-message">No accounts found</p>';
+            return;
+        }
+
+        const accountsHTML = response.records.map(account => `
+            <div class="account-card">
+                <div class="account-header">
+                    <div class="account-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <h3>${account.fields.Username}</h3>
+                </div>
+                <div class="account-details">
+                    <div class="role-badge ${account.fields.Role}">
+                        ${account.fields.Role.charAt(0).toUpperCase() + account.fields.Role.slice(1)}
+                    </div>
+                    ${account.fields.Role === 'customer' ? 
+                        `<div class="customer-id">ID: ${account.fields.CustomerID || 'N/A'}</div>` : 
+                        ''}
+                </div>
+                <div class="account-actions">
+                    <button class="btn btn-sm btn-secondary" onclick="editAccount('${account.id}')">
+                        <i class="fas fa-edit"></i> Edit
+                    </button>
+                    <button class="btn btn-sm btn-danger" onclick="deleteAccount('${account.id}')">
+                        <i class="fas fa-trash"></i> Delete
+                    </button>
+                </div>
+            </div>
+        `).join('');
+
+        accountsList.innerHTML = accountsHTML;
     } catch (error) {
         console.error('Error fetching accounts:', error);
-        const accountsGrid = document.getElementById('accounts-grid');
-        if (accountsGrid) {
-            accountsGrid.innerHTML = `
-                <div class="error-message">
-                    <p>Error loading accounts: ${error.message}</p>
-                    <button onclick="fetchAccounts()" class="retry-btn">Retry</button>
-                </div>
-            `;
-        }
+        accountsList.innerHTML = '<p class="error-message">Error loading accounts: ' + error.message + '</p>';
     }
 }
 
-// Function to display accounts
-function displayAccounts(accounts) {
-    const accountsGrid = document.getElementById('accounts-grid');
-    const accountsHTML = accounts.map(account => `
-        <div class="account-card">
-            <div class="info-section">
-                <h3>${account.fields.Username || 'N/A'}</h3>
-                <p>Customer ID: ${account.fields.CustomerID || 'N/A'}</p>
-                <p>Role: ${account.fields.Role || 'N/A'}</p>
-            </div>
-            <div class="actions-section">
-                <button class="btn-secondary" onclick="openEditAccountModal('${account.id}')">
-                    <i class="fas fa-edit"></i> Edit
-                </button>
-                <button class="btn-delete" onclick="deleteAccount('${account.id}')">
-                    <i class="fas fa-trash"></i> Delete
-                </button>
-            </div>
-        </div>
-    `).join('');
-
-    // Removed the section header, now just showing the accounts list
-    accountsGrid.innerHTML = `
-        <div class="accounts-list">
-            ${accountsHTML}
-        </div>
-    `;
-}
-
-// Function to open add account modal
-function openAddAccountModal() {
-    const modal = document.createElement('div');
-    modal.className = 'modal';
-    modal.innerHTML = `
-        <div class="modal-content">
-            <h2>Add New Account</h2>
-            <form id="add-account-form">
-                <div class="form-group">
-                    <input type="text" id="new-username" placeholder="Username" required>
-                </div>
-                <div class="form-group">
-                    <input type="password" id="new-password" placeholder="Password" required>
-                </div>
-                <div class="form-group">
-                    <select id="new-role" required>
-                        <option value="" disabled selected>Select Role</option>
-                        <option value="admin">admin</option>
-                        <option value="customer">customer</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <input type="text" id="new-customerID" placeholder="Customer ID" required>
-                </div>
-                <div class="modal-actions">
-                    <button type="submit" class="btn-secondary">Save</button>
-                    <button type="button" class="btn-cancel" onclick="closeModal()">Cancel</button>
-                </div>
-            </form>
-        </div>
-    `;
-    document.body.appendChild(modal);
-
-    // Add form submit handler
-    document.getElementById('add-account-form').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        await addAccount();
-    });
-}
-
-// Function to add new account
 async function addAccount() {
     try {
-        const username = document.getElementById('new-username');
-        const password = document.getElementById('new-password');
-        const role = document.getElementById('new-role');
-        const customerID = document.getElementById('new-customerID');
+        const modalContent = `
+            <form id="addAccountForm" class="admin-form">
+                <div class="form-group">
+                    <input type="text" 
+                           id="username" 
+                           name="username"
+                           placeholder="Username *"
+                           required>
+                </div>
+                <div class="form-group">
+                    <input type="password" 
+                           id="password" 
+                           name="password"
+                           placeholder="Password *"
+                           required>
+                </div>
+                <div class="form-group">
+                    <select id="role" name="role" required>
+                        <option value="">Select Role *</option>
+                        <option value="admin">Admin</option>
+                        <option value="customer">Customer</option>
+                    </select>
+                </div>
+                <div class="form-group" id="customerIdGroup" style="display: none;">
+                    <input type="text" 
+                           id="customerId" 
+                           name="customerId"
+                           placeholder="Customer ID">
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Add Account</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                </div>
+            </form>
+        `;
 
-        // Check if elements exist
-        if (!username || !password || !role || !customerID) {
-            throw new Error('Form elements not found');
-        }
+        showModal('Add New Account', modalContent);
 
-        // Validate data
-        if (!username.value.trim()) throw new Error('Username is required');
-        if (!password.value.trim()) throw new Error('Password is required');
-        if (!role.value.trim()) throw new Error('Role is required');
-        if (!customerID.value.trim()) throw new Error('Customer ID is required');
+        // Show/hide Customer ID field based on role selection
+        document.getElementById('role').addEventListener('change', function() {
+            const customerIdGroup = document.getElementById('customerIdGroup');
+            customerIdGroup.style.display = this.value === 'customer' ? 'block' : 'none';
+            const customerIdInput = document.getElementById('customerId');
+            customerIdInput.required = this.value === 'customer';
+        });
 
-        const data = {
-            Username: username.value.trim(),
-            Password: password.value.trim(),
-            Role: role.value.trim(),
-            CustomerID: customerID.value.trim()
-        };
+        // Form submission handler
+        document.getElementById('addAccountForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const role = document.getElementById('role').value;
+            const accountData = {
+                fields: {
+                    "Username": document.getElementById('username').value.trim(),
+                    "Password": document.getElementById('password').value,
+                    "Role": role,
+                    "CustomerID": role === 'customer' ? document.getElementById('customerId').value.trim() : ''
+                }
+            };
 
-        console.log('Sending data:', data); // Debug log
+            console.log('Submitting account data:', accountData);
 
-        const result = await createAirtableRecord('Users', data);
-        console.log('Airtable response:', result); // Debug log
-
-        closeModal();
-        fetchAccounts(); // Refresh the list
-        showToast('Account added successfully!', 'success');
+            try {
+                const result = await createAirtableRecord('Users', accountData);
+                console.log('Airtable response:', result);
+                
+                if (result && result.id) {
+                    closeModal();
+                    await fetchAccounts();
+                    showNotification('Account added successfully!', 'success');
+                } else {
+                    throw new Error('Invalid response from Airtable');
+                }
+            } catch (error) {
+                console.error('Error adding account:', error);
+                showNotification('Error adding account: ' + error.message, 'error');
+            }
+        });
     } catch (error) {
-        console.error('Error adding account:', error);
-        showToast(error.message || 'Error adding account', 'error');
+        console.error('Error setting up add account form:', error);
+        showNotification('Error adding account: ' + error.message, 'error');
     }
 }
 
-// Function to open edit account modal
-async function openEditAccountModal(accountId) {
+async function editAccount(accountId) {
     try {
         const account = await fetchAirtableRecord('Users', accountId);
         const modal = document.createElement('div');
@@ -664,7 +647,6 @@ async function openEditAccountModal(accountId) {
     }
 }
 
-// Function to update account
 async function updateAccount(accountId) {
     try {
         const data = {
@@ -689,7 +671,6 @@ async function updateAccount(accountId) {
     }
 }
 
-// Function to delete account
 async function deleteAccount(accountId) {
     if (confirm('Are you sure you want to delete this account?')) {
         try {
