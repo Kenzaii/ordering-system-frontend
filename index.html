@@ -30,24 +30,26 @@
         </div>
     </div>
     <div class="chat-widget">
-        <button class="chat-button" id="chatButton">
-            <i class="fas fa-comments"></i>
-        </button>
-        
-        <div class="chat-container" id="chatContainer">
-            <div class="chat-header">
-                <h3>Chat with us</h3>
-                <button class="close-button" id="closeButton">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <iframe 
-                class="chat-iframe"
-                src="https://app.relevanceai.com/agents/f1db6c/f099903e0711-4d99-8a1c-6c65b95a8189/772c3d36-ddc1-4f56-8383-4e023aedf1ef/share"
-                frameborder="0">
-            </iframe>
+    <button class="chat-button" id="chatButton">
+        <i class="fas fa-comments"></i>
+    </button>
+    
+    <div class="chat-overlay" id="chatOverlay"></div>
+    
+    <div class="chat-container" id="chatContainer">
+        <div class="chat-header">
+            <h3>Chat with us</h3>
+            <button class="close-button" id="closeButton">
+                <i class="fas fa-times"></i>
+            </button>
         </div>
+        <iframe 
+            class="chat-iframe"
+            src="https://app.relevanceai.com/agents/f1db6c/f099903e0711-4d99-8a1c-6c65b95a8189/772c3d36-ddc1-4f56-8383-4e023aedf1ef/share"
+            frameborder="0">
+        </iframe>
     </div>
+</div>
     <script src="config.js"></script>
     <script src="script.js"></script>
 </body>
