@@ -32,12 +32,23 @@ body {
 
 .toggle-button {
     background-color: #007bff;
-    color: white;
     border: none;
-    border-radius: 5px;
-    padding: 10px 15px;
+    border-radius: 50%; /* Make it circular */
+    width: 50px; /* Adjust size as needed */
+    height: 50px; /* Adjust size as needed */
     cursor: pointer;
-    margin: 10px;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.chat-icon {
+    width: 24px; /* Adjust icon size */
+    height: 24px; /* Adjust icon size */
 }
 
 .overlay {
