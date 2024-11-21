@@ -115,3 +115,12 @@ function showError(message) {
 }
 
 
+document.getElementById('toggle-button').addEventListener('click', function() {
+    const overlay = document.getElementById('overlay');
+    overlay.style.display = overlay.style.display === 'flex' ? 'none' : 'flex';
+});
+
+document.getElementById('close-button').addEventListener('click', function() {
+    document.getElementById('overlay').style.display = 'none';
+});
+
