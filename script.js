@@ -117,19 +117,48 @@ function showError(message) {
 //script for Popout Chat
 const chatButton = document.getElementById('chatButton');
 const chatContainer = document.getElementById('chatContainer');
+const chatOverlay = document.getElementById('chatOverlay');
 const closeButton = document.getElementById('closeButton');
 
-chatButton.addEventListener('click', () => {
+function openChat() {
+    chatOverlay.style.display = 'block';
     chatContainer.style.display = 'block';
-    chatContainer.classList.remove('slide-out');
-    chatContainer.classList.add('slide-in');
-});
+    chatOverlay.classList.remove('fade-out');
+    chatContainer.classList.remove('fade-out');
+    chatOverlay.classList.add('fade-in');
+    chatContainer.classList.add('fade-in');
+}
 
-closeButton.addEventListener('click', () => {
-    chatContainer.classList.remove('slide-in');
-    chatContainer.classList.add('slide-out');
+function closeChat() {
+    chatOverlay.classList.remove('fade-in');
+    chatContainer.classList.remove('fade-in');
+    chatOverlay.classList.add('fade-out');
+    chatContainer.classList.add('fade-out');
     setTimeout(() => {
+        chatOverlay.style.display = 'none';
         chatContainer.style.display = 'none';
     }, 300);
+}
+
+chatButton.addEventListener('click', openChat);
+closeButton.addEventListener('click', closeChat);
+
+// Close chat when clicking outside
+chatOverlay.addEventListener('click', (e) => {
+    if (e.target === chatOverlay) {
+        closeChat();
+    }
+});
+
+// Prevent closing when clicking inside the chat container
+chatContainer.addEventListener('click', (e) => {
+    e.stopPropagation();
+});
+
+// Handle escape key
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && chatContainer.style.display === 'block') {
+        closeChat();
+    }
 });
 
