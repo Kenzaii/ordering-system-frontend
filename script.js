@@ -114,13 +114,22 @@ function showError(message) {
     }, 5000);
 }
 
+//script for Popout Chat
+const chatButton = document.getElementById('chatButton');
+const chatContainer = document.getElementById('chatContainer');
+const closeButton = document.getElementById('closeButton');
 
-document.getElementById('toggle-button').addEventListener('click', function() {
-    const overlay = document.getElementById('overlay');
-    overlay.style.display = overlay.style.display === 'flex' ? 'none' : 'flex';
+chatButton.addEventListener('click', () => {
+    chatContainer.style.display = 'block';
+    chatContainer.classList.remove('slide-out');
+    chatContainer.classList.add('slide-in');
 });
 
-document.getElementById('close-button').addEventListener('click', function() {
-    document.getElementById('overlay').style.display = 'none';
+closeButton.addEventListener('click', () => {
+    chatContainer.classList.remove('slide-in');
+    chatContainer.classList.add('slide-out');
+    setTimeout(() => {
+        chatContainer.style.display = 'none';
+    }, 300);
 });
 
